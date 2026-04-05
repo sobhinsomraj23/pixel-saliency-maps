@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pixel Saliency Maps</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Pixel Saliency Maps</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if original %}
+    <div class="results">
+
+        <div class="card">
+            <h3>Original</h3>
+            <img src="{{ url_for('static', filename=original) }}">
+        </div>
+
+        <div class="card">
+            <h3>Vanilla Saliency</h3>
+            <img src="{{ url_for('static', filename=vanilla) }}">
+        </div>
+
+        <div class="card">
+            <h3>Guided Backprop</h3>
+            <img src="{{ url_for('static', filename=guided) }}">
+        </div>
+
+        <div class="card">
+            <h3>Vanilla Overlay</h3>
+            <img src="{{ url_for('static', filename=vanilla_overlay) }}">
+        </div>
+
+        <div class="card">
+            <h3>Guided Overlay</h3>
+            <img src="{{ url_for('static', filename=guided_overlay) }}">
+        </div>
+
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

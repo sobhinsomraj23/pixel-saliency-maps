@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-class GuidedBackdrop:
+class GuidedBackprop:
     def __init__(self, model):
         self.model = model
         self.gradients = None
@@ -46,4 +46,4 @@ class GuidedBackdrop:
         # Process gradients
         saliency, _ = torch.max(gradients.abs(), dim=1)
 
-        return saliency.squeeze().cpu().numpy().predicted_class.item()
+        return saliency.squeeze().cpu().numpy(), predicted_class.item()
