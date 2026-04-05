@@ -1,22 +1,38 @@
+from PIL import Image
 import torch
-import torchvision.models as models
-from config import DEVICE, MODEL_NAME, PRETRAINED
+import torchvision.transforms as transforms
+from config import IMAGE_SIZE, DEVICE
 
 
-def load_model():
+def load_image(image_path):
     """
-    Loads a pretrained model and prepares it for saliency computation.
+    Loads an image from disk.
+    """
+    image = Image.open(image_path).convert("RGB")
+    return image
+
+
+def preprocess_image(image):
+    """
+    Preprocess the image to match model requirements.
+    Also enables gradient tracking on input.
     """
 
-    if MODEL_NAME == "resnet50":
-        model = models.resnet50(pretrained=PRETRAINED)
-    else:
-        raise ValueError(f"Model {MODEL_NAME} not supported yet.")
+    transform = transforms.Compose([
+        transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )
+    ])
 
-    # Move model to device
-    model = model.to(DEVICE)
+    image_tensor = transform(image).unsqueeze(0)  # Shape: (1, 3, H, W)
 
-    # Set to evaluation mode
-    model.eval()
+    # Move to device
+    image_tensor = image_tensor.to(DEVICE)
 
-    return model
+    # 🔥 VERY IMPORTANT: Enable gradient tracking
+    image_tensor.requires_grad = True
+
+    return image_tensor
